@@ -18,3 +18,29 @@ dev = ["fastapi-cli>=0.0.24", "ruff>=0.15.4"]
 [tool.ruff]
 target-version = "py314"
 line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "B",     # flake8-bugbear
+    "C4",    # flake8-comprehensions
+    "ARG",   # flake8-unused-arguments
+    "UP",    # pyupgrade
+    "T20",   # flake8-print
+    "SIM",   # flake8-simplify
+    "N",     # pep8-naming
+    "Q",     # flake8-quotes
+    "ASYNC", # flake8-async
+    "S",     # flake8-bandit
+    "PTH",   # flake8-use-pathlib
+    "ERA",   # eradicate (commented-out code)
+    "PL",    # pylint
+    "PERF",  # perflint
+    "RET",   # flake8-return
+    "TC",    # flake8-type-checking
+    "FAST",  # FastAPI
+    "ANN",   # flake8-annotations
+]
