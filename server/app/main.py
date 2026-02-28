@@ -1,6 +1,8 @@
-def main() -> None:
-    print("Hello from harmony!")
+from fastapi import FastAPI
+
+app = FastAPI(title="Harmony")
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {"message": "Hello from Harmony :P"}
