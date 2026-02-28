@@ -13,6 +13,8 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "fastapi-cli>=0.0.24",
-]
+dev = ["fastapi-cli>=0.0.24", "ruff>=0.15.4"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
