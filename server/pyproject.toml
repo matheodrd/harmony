@@ -11,3 +11,8 @@ dependencies = [
     "uvicorn>=0.41.0",
     "uvloop>=0.22.1",
 ]
+
+[dependency-groups]
+dev = [
+    "fastapi-cli>=0.0.24",
+]
