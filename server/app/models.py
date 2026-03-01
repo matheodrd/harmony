@@ -1,6 +1,7 @@
 import enum
+from datetime import UTC, datetime
 
-from sqlalchemy import Enum, ForeignKey, String
+from sqlalchemy import DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -22,6 +23,10 @@ class User(Base):
 
     owned_servers: Mapped[list[Server]] = relationship(
         back_populates="owner",
+        lazy="selectin",
+    )
+    messages: Mapped[list[Message]] = relationship(
+        back_populates="author",
         lazy="selectin",  # FIXME: change to "raise" and implement pagination
     )
 
@@ -50,6 +55,29 @@ class Channel(Base):
         Enum(ChannelType),
         default=ChannelType.TEXT,
     )
+
     server_id: Mapped[int] = mapped_column(ForeignKey("servers.id"))
 
     server: Mapped[Server] = relationship(back_populates="channels")
+    messages: Mapped[list[Message]] = relationship(
+        back_populates="channel",
+        lazy="selectin",  # FIXME: change to "raise" and implement pagination
+        cascade="all, delete-orphan",
+    )
+
+
+class Message(Base):
+    __tablename__ = "messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
+
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    channel_id: Mapped[int] = mapped_column(ForeignKey("channels.id"))
+
+    author: Mapped[User] = relationship(back_populates="messages", lazy="joined")
+    channel: Mapped[Channel] = relationship(back_populates="messages", lazy="joined")
