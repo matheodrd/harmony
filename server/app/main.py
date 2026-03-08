@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException, status
 
 from app import crud
 from app.database import engine
-from app.dependencies import DBSessionDep, OAuth2FormDep  # noqa: TC001
+from app.dependencies import CurrentUserDep, DBSessionDep, OAuth2FormDep  # noqa: TC001
 from app.models import Base
 from app.schemas import Token, UserCreate, UserRead
 from app.security import create_access_token, password_hash
@@ -49,6 +49,11 @@ async def create_user(payload: UserCreate, db: DBSessionDep) -> User:
 @app.get("/users", response_model=list[UserRead], status_code=status.HTTP_200_OK)
 async def get_users(db: DBSessionDep) -> list[User]:
     return await crud.get_all_users(db)
+
+
+@app.get("/users/me", response_model=UserRead)
+async def get_me(current_user: CurrentUserDep) -> User:
+    return current_user
 
 
 @app.get("/users/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
