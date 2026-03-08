@@ -11,6 +11,7 @@ dependencies = [
     "httpx>=0.28.1",
     "pwdlib[argon2]>=0.3.0",
     "pydantic-settings>=2.13.1",
+    "pyjwt[crypto]>=2.11.0",
     "python-multipart>=0.0.22",
     "sqlalchemy>=2.0.47",
     "uvicorn>=0.41.0",
@@ -18,7 +19,10 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["fastapi-cli>=0.0.24", "ruff>=0.15.4"]
+dev = [
+    "fastapi-cli>=0.0.24",
+    "ruff>=0.15.4",
+]
 
 [tool.ruff]
 target-version = "py314"
