@@ -11,6 +11,11 @@ if TYPE_CHECKING:
     from app.schemas import UserCreate
 
 
+async def get_all_users(db: AsyncSession) -> list[User]:
+    result = await db.execute(select(User))
+    return list(result.scalars().all())
+
+
 async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
     return await db.get(User, user_id)
 
