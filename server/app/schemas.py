@@ -24,3 +24,11 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase, ORMModel):
     id: int
+
+
+## Auth ##
+
+
+class Token(APIModel):
+    access_token: str
+    token_type: str = "bearer"  # noqa: S105
