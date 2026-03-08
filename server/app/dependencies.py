@@ -2,7 +2,7 @@ from typing import Annotated
 
 import jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from server.app.models import User
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -36,3 +36,4 @@ async def get_current_user(
 
 DBSessionDep = Annotated[AsyncSession, Depends(get_db)]
 CurrentUserDep = Annotated[User, Depends(get_current_user)]
+OAuth2FormDep = Annotated[OAuth2PasswordRequestForm, Depends()]
