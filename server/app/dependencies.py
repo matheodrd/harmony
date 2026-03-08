@@ -3,11 +3,11 @@ from typing import Annotated
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from server.app.models import User
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
 from app.database import get_db
+from app.models import User
 from app.security import decode_access_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
