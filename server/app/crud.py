@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 
-from app.models import User
+from app.models import Server, User
 from app.security import password_hash
+from app.schemas import ServerCreate
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,3 +37,18 @@ async def create_user(db: AsyncSession, payload: UserCreate) -> User:
     await db.refresh(user)
 
     return user
+
+
+async def create_server(
+    db: AsyncSession, payload: ServerCreate, owner_id: int
+) -> Server:
+    server = Server(
+        name=payload.name,
+        owner_id=owner_id,
+    )
+
+    db.add(server)
+    await db.commit()
+    await db.refresh(server)
+
+    return server
