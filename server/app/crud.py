@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 
-from app.models import Server, User
+from app.models import Channel, Server, User
 from app.security import password_hash
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from app.schemas import ServerCreate, UserCreate
+    from app.schemas import ChannelCreate, ServerCreate, UserCreate
 
 
 async def get_all_users(db: AsyncSession) -> list[User]:
@@ -55,3 +55,19 @@ async def create_server(
 
 async def get_server_by_id(db: AsyncSession, server_id: int) -> Server | None:
     return await db.get(Server, server_id)
+
+
+async def create_channel(
+    db: AsyncSession, payload: ChannelCreate, server_id: int
+) -> Channel:
+    channel = Channel(
+        name=payload.name,
+        type=payload.type,
+        server_id=server_id,
+    )
+
+    db.add(channel)
+    await db.commit()
+    await db.refresh(channel)
+
+    return channel
