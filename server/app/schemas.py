@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
+from app.models import ChannelType  # noqa: TC001
+
 ## Base models ##
 
 
@@ -48,3 +50,20 @@ class ServerCreate(ServerBase):
 class ServerRead(ServerBase, ORMModel):
     id: int
     owner_id: int
+
+
+## Channel ##
+
+
+class ChannelBase(APIModel):
+    name: str
+    type: ChannelType
+
+
+class ChannelCreate(ChannelBase):
+    pass
+
+
+class ChannelRead(ChannelBase, ORMModel):
+    id: int
+    server_id: int
