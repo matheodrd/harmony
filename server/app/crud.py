@@ -51,3 +51,7 @@ async def create_server(
     await db.refresh(server)
 
     return server
+
+
+async def get_server_by_id(db: AsyncSession, server_id: int) -> Server | None:
+    return await db.get(Server, server_id)
