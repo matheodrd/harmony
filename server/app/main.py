@@ -5,9 +5,10 @@ from fastapi import FastAPI, HTTPException, status
 
 from app import crud
 from app.database import engine
-from app.dependencies import DBSessionDep  # noqa: TC001
+from app.dependencies import DBSessionDep, OAuth2FormDep  # noqa: TC001
 from app.models import Base
-from app.schemas import UserCreate, UserRead
+from app.schemas import Token, UserCreate, UserRead
+from app.security import create_access_token, password_hash
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
@@ -59,3 +60,18 @@ async def get_user(user_id: int, db: DBSessionDep) -> User:
             detail=f"User {user_id} not found",
         )
     return user
+
+
+@app.post("/auth/token")
+async def login(form_data: OAuth2FormDep, db: DBSessionDep) -> Token:
+    user = await crud.get_user_by_username(db, form_data.username)
+    if user is None or not password_hash.verify(
+        form_data.password, user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return Token(access_token=create_access_token(subject=user.username))
