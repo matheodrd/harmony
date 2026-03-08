@@ -6,8 +6,8 @@ from fastapi import FastAPI, HTTPException, status
 from app import crud
 from app.database import engine
 from app.dependencies import CurrentUserDep, DBSessionDep, OAuth2FormDep  # noqa: TC001
-from app.models import Base
-from app.schemas import Token, UserCreate, UserRead
+from app.models import Base, Server
+from app.schemas import ServerCreate, ServerRead, Token, UserCreate, UserRead
 from app.security import create_access_token, password_hash
 
 if TYPE_CHECKING:
@@ -65,6 +65,13 @@ async def get_user(user_id: int, db: DBSessionDep) -> User:
             detail=f"User {user_id} not found",
         )
     return user
+
+
+@app.post("/servers", response_model=ServerRead, status_code=status.HTTP_201_CREATED)
+async def create_server(
+    payload: ServerCreate, db: DBSessionDep, current_user: CurrentUserDep
+) -> Server:
+    return await crud.create_server(db, payload, owner_id=current_user.id)
 
 
 @app.post("/auth/token")
