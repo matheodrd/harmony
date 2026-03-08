@@ -48,3 +48,14 @@ async def create_user(payload: UserCreate, db: DBSessionDep) -> User:
 @app.get("/users", response_model=list[UserRead], status_code=status.HTTP_200_OK)
 async def get_users(db: DBSessionDep) -> list[User]:
     return await crud.get_all_users(db)
+
+
+@app.get("/users/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
+async def get_user(user_id: int, db: DBSessionDep) -> User:
+    user = await crud.get_user_by_id(db, user_id)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User {user_id} not found",
+        )
+    return user
