@@ -43,3 +43,8 @@ async def create_user(payload: UserCreate, db: DBSessionDep) -> User:
             detail=f"Username '{payload.username}' is already taken",
         )
     return await crud.create_user(db, payload)
+
+
+@app.get("/users", response_model=list[UserRead], status_code=status.HTTP_200_OK)
+async def get_users(db: DBSessionDep) -> list[User]:
+    return await crud.get_all_users(db)
