@@ -6,14 +6,22 @@ from fastapi import FastAPI, HTTPException, status
 from app import crud
 from app.database import engine
 from app.dependencies import CurrentUserDep, DBSessionDep, OAuth2FormDep  # noqa: TC001
-from app.models import Base, Server
-from app.schemas import ServerCreate, ServerRead, Token, UserCreate, UserRead
+from app.models import Base
+from app.schemas import (
+    ChannelCreate,
+    ChannelRead,
+    ServerCreate,
+    ServerRead,
+    Token,
+    UserCreate,
+    UserRead,
+)
 from app.security import create_access_token, password_hash
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
 
-    from app.models import User
+    from app.models import Channel, Server, User
 
 
 @asynccontextmanager
@@ -72,6 +80,32 @@ async def create_server(
     payload: ServerCreate, db: DBSessionDep, current_user: CurrentUserDep
 ) -> Server:
     return await crud.create_server(db, payload, owner_id=current_user.id)
+
+
+@app.post(
+    "/servers/{server_id}/channels",
+    response_model=ChannelRead,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_channel(
+    server_id: int,
+    payload: ChannelCreate,
+    db: DBSessionDep,
+    current_user: CurrentUserDep,
+) -> Channel:
+    server = await crud.get_server_by_id(db, server_id)
+    if server is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Server {server_id} not found",
+        )
+    if current_user.id != server.owner_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Not server {server_id} owner",
+        )
+
+    return await crud.create_channel(db, payload, server_id)
 
 
 @app.post("/auth/token")
