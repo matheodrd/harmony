@@ -4,12 +4,11 @@ from sqlalchemy import select
 
 from app.models import Server, User
 from app.security import password_hash
-from app.schemas import ServerCreate
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from app.schemas import UserCreate
+    from app.schemas import ServerCreate, UserCreate
 
 
 async def get_all_users(db: AsyncSession) -> list[User]:
