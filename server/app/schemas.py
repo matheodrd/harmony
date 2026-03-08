@@ -32,3 +32,19 @@ class UserRead(UserBase, ORMModel):
 class Token(APIModel):
     access_token: str
     token_type: str = "bearer"  # noqa: S105
+
+
+## Server ##
+
+
+class ServerBase(APIModel):
+    name: str
+
+
+class ServerCreate(ServerBase):
+    pass
+
+
+class ServerRead(ServerBase, ORMModel):
+    id: int
+    owner_id: int
