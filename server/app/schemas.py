@@ -1,3 +1,5 @@
+from datetime import datetime  # noqa: TC003
+
 from pydantic import BaseModel, ConfigDict
 
 from app.models import ChannelType  # noqa: TC001
@@ -67,3 +69,21 @@ class ChannelCreate(ChannelBase):
 class ChannelRead(ChannelBase, ORMModel):
     id: int
     server_id: int
+
+
+## Message ##
+
+
+class MessageBase(APIModel):
+    content: str
+
+
+class MessageCreate(MessageBase):
+    pass
+
+
+class MessageRead(MessageBase, ORMModel):
+    id: int
+    created_at: datetime
+    author_id: int
+    channel_id: int
